@@ -1,6 +1,6 @@
-# @niche-works/web-font-observer
+# @fringeworks/web-font-observer
 
-`@niche-works/web-font-observer` は、Webフォントの利用可否を確認することに特化したニッチなライブラリです。\
+`@fringeworks/web-font-observer` は、Webフォントの利用可否を確認することに特化したニッチなライブラリです。\
 標準の CSS Font Loading API をベースに、[fontfaceobserver](https://github.com/bramstein/fontfaceobserver) 相当の機能を2021年以降の主要ブラウザ向けに提供します。
 
 **[English README is available here](./README.md)**
@@ -15,9 +15,9 @@
 ## インストール
 
 ```bash
-npm install @niche-works/web-font-observer
+npm install @fringeworks/web-font-observer
 # または
-pnpm add @niche-works/web-font-observer
+pnpm add @fringeworks/web-font-observer
 ```
 
 ## 使い方
@@ -27,7 +27,7 @@ pnpm add @niche-works/web-font-observer
 指定のWebフォントが利用可能になるまで待機します。
 
 ```ts
-import { waitForWebFont } from '@niche-works/web-font-observer';
+import { waitForWebFont } from '@fringeworks/web-font-observer';
 
 try {
   await waitForWebFont('Noto Sans JP', { weight: 700, text: 'あ' });
@@ -61,7 +61,7 @@ controller.abort();
 指定のWebフォントがロード済みで、すぐに利用できるかを同期的に判定します。
 
 ```ts
-import { isWebFontLoaded } from '@niche-works/web-font-observer';
+import { isWebFontLoaded } from '@fringeworks/web-font-observer';
 
 if (isWebFontLoaded('Noto Sans JP')) {
   // 待つ必要なし
