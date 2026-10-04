@@ -9,7 +9,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/mitsuhiroseino/niche-works-web-font-observer.git"
+    "url": "git+https://github.com/mitsuhiroseino/niche-works-web-font-observer.git"
   },
   "license": "MIT",
   "author": "Mitsuhiro Seino",
