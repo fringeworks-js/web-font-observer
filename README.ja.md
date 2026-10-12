@@ -1,6 +1,6 @@
 # @fringeworks/web-font-observer
 
-`@fringeworks/web-font-observer` は、Webフォントの利用可否を確認することに特化したニッチなライブラリです。\
+`@fringeworks/web-font-observer` は、Webフォントの利用可否を確認することに特化した、誰かにとっては便利なライブラリです。\
 標準の CSS Font Loading API をベースに、[fontfaceobserver](https://github.com/bramstein/fontfaceobserver) 相当の機能を2021年以降の主要ブラウザ向けに提供します。
 
 **[English README is available here](./README.md)**

@@ -1,6 +1,6 @@
 # @fringeworks/web-font-observer
 
-`@fringeworks/web-font-observer` is a niche library for checking whether web fonts are available.\
+`@fringeworks/web-font-observer` is a library some will find handy, for checking whether web fonts are available.\
 It is built on the standard CSS Font Loading API and provides functionality equivalent to [fontfaceobserver](https://github.com/bramstein/fontfaceobserver) for major browsers released in 2021 or later.
 
 **[日本語のREADMEはこちら](./README.ja.md)**
