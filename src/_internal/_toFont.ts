@@ -24,7 +24,7 @@ export default function toFont(
 export function normalizeFamily(family: string): string {
   const trimmed = family.trim();
   const match = /^(["'])(.*)\1$/.exec(trimmed);
-  return match ? match[2] : trimmed;
+  return match ? match[2]! : trimmed;
 }
 
 /**

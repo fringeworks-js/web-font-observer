@@ -44,7 +44,8 @@ export default function waitForWebFont(
       signal?.removeEventListener('abort', onAbort);
       fn();
     };
-    const onAbort = () => settle(() => reject(getAbortReason(signal)));
+    // signal があるときだけ登録するので、signal は必ずある
+    const onAbort = () => settle(() => reject(getAbortReason(signal!)));
 
     const check = () => {
       fontFaceSet.load(font, text).then(
