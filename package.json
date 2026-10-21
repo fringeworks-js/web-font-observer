@@ -1,6 +1,6 @@
 {
   "name": "@fringeworks/web-font-observer",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "private": true,
   "description": "A library some will find handy, for checking whether web fonts are available.",
   "keywords": [
@@ -30,12 +30,13 @@
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json}\"",
     "indexes": "tsx scripts/indexes.ts",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "release": "pnpm build && npm publish ./dist",
     "test": "vitest",
     "tidy": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json}\" --config ./prettier.tidy.config.ts"
   },
   "devDependencies": {
-    "@fringeworks/dev": "^0.13.0",
+    "@fringeworks/dev": "^0.13.1",
     "@types/node": "^25.9.9",
     "@vitest/coverage-v8": "^4.1.11",
     "eslint": "^10.12.0",
