@@ -1,5 +1,5 @@
+import _findFontFaces from '../_internal/_findFontFaces';
 import _getFontFaceSet from '../_internal/_getFontFaceSet';
-import _hasFontFace from '../_internal/_hasFontFace';
 import _toFont from '../_internal/_toFont';
 import type { IsWebFontLoadedOptions } from './types';
 
@@ -15,8 +15,13 @@ export default function isWebFontLoaded(
   options: IsWebFontLoadedOptions = {},
 ): boolean {
   const fontFaceSet = _getFontFaceSet();
-  // check()は該当するFontFaceが無い場合にtrueを返すことがあるため、登録の有無を先に確認する
-  if (!fontFaceSet || !_hasFontFace(fontFaceSet, family)) {
+  if (!fontFaceSet) {
+    return false;
+  }
+  // check()は該当するFontFaceが無い場合（未登録のファミリーや、textを収録したファイルが無い場合）にも
+  // trueを返すため、ロード済みのFontFaceが1つ以上あることを先に確認する
+  const fontFaces = _findFontFaces(fontFaceSet, family);
+  if (!fontFaces.some((fontFace) => fontFace.status === 'loaded')) {
     return false;
   }
   try {

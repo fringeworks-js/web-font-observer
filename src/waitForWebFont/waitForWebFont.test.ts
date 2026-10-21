@@ -81,6 +81,17 @@ describe('waitForWebFont', () => {
     expect(onSettled).toHaveBeenCalledWith([fontFace]);
   });
 
+  it('timeoutにNaNを指定した場合、デフォルト値でタイムアウトする', async () => {
+    load.mockResolvedValue([]);
+    const promise = waitForWebFont('Roboto', { timeout: NaN });
+    const assertion = expect(promise).rejects.toMatchObject({
+      name: 'TimeoutError',
+    });
+
+    await vi.advanceTimersByTimeAsync(DEFAULT_TIMEOUT);
+    await assertion;
+  });
+
   it('load()がrejectした場合、そのエラーでrejectする', async () => {
     const error = new DOMException('failed', 'NetworkError');
     load.mockRejectedValue(error);

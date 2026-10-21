@@ -22,9 +22,7 @@ pnpm add @fringeworks/web-font-observer
 
 ## 使い方
 
-### `waitForWebFont`
-
-指定のWebフォントが利用可能になるまで待機します。
+### Webフォントが利用可能になるまで待機する
 
 ```ts
 import { waitForWebFont } from '@fringeworks/web-font-observer';
@@ -37,16 +35,7 @@ try {
 }
 ```
 
-戻り値のPromiseは、該当した`FontFace`の配列で解決します。以下の場合は`DOMException`でrejectします。
-
-| ケース                                      | エラー                                        |
-| ------------------------------------------- | --------------------------------------------- |
-| `timeout`までに利用可能にならなかった       | `TimeoutError`                                |
-| `signal`で中断した                          | `signal.reason`（未設定の場合は`AbortError`） |
-| フォントファイルの読み込みに失敗した        | `document.fonts.load()`のエラー               |
-| `document.fonts`を利用できない（SSR時など） | `NotSupportedError`                           |
-
-#### 中断
+### 待機を中断する
 
 ```ts
 const controller = new AbortController();
@@ -56,9 +45,7 @@ waitForWebFont('Roboto', { signal: controller.signal });
 controller.abort();
 ```
 
-### `isWebFontLoaded`
-
-指定のWebフォントがロード済みで、すぐに利用できるかを同期的に判定します。
+### ロード済みかを同期的に判定する
 
 ```ts
 import { isWebFontLoaded } from '@fringeworks/web-font-observer';
@@ -68,18 +55,84 @@ if (isWebFontLoaded('Noto Sans JP')) {
 }
 ```
 
-`document.fonts`に登録されていないフォントや、SSR時など判定できない環境では`false`を返します。
+## API
 
-## オプション
+| 関数                                | 説明                                                            |
+| ----------------------------------- | --------------------------------------------------------------- |
+| `waitForWebFont(family, options?)`  | Webフォントが利用可能になるまで待機する                         |
+| `isWebFontLoaded(family, options?)` | Webフォントがロード済みで、すぐに利用できるかを同期的に判定する |
 
-| オプション | 型                                                      | デフォルト | 説明                                                                                                        |
-| ---------- | ------------------------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------- |
-| `weight?`  | `number \| 'normal' \| 'bold'`                          | `normal`   | フォントの太さ（`font-weight`）                                                                             |
-| `style?`   | `'normal' \| 'italic' \| 'oblique' \| 'oblique <n>deg'` | `normal`   | フォントのスタイル（`font-style`）                                                                          |
-| `width?`   | `'normal' \| 'condensed' \| 'expanded' \| ...`          | `normal`   | フォントの幅（`font-width`）。キーワードのみ指定可能                                                        |
-| `text?`    | `string`                                                | `' '`      | 判定に使用する文字列。[`unicode-range`で分割されたWebフォント](#unicode-rangeで分割されたwebフォント)を参照 |
-| `timeout?` | `number`                                                | `3000`     | `waitForWebFont`のみ。失敗とみなすまでの時間（ミリ秒）。`Infinity`でタイムアウトなし                        |
-| `signal?`  | `AbortSignal`                                           | -          | `waitForWebFont`のみ。待機を中断するためのシグナル                                                          |
+### `waitForWebFont`
+
+```ts
+waitForWebFont(
+  family: string,
+  options?: WaitForWebFontOptions,
+): Promise<FontFace[]>
+```
+
+指定のWebフォントが利用可能になるまで待機し、該当した`FontFace`の配列で解決するPromiseを返します。\
+CSSの読み込み待ちなどで`FontFace`がまだ登録されていない場合は、登録されるまで再確認を繰り返します。
+
+| 引数       | 型                      | 説明                                         |
+| ---------- | ----------------------- | -------------------------------------------- |
+| `family`   | `string`                | フォントファミリー。クォートの有無は問わない |
+| `options?` | `WaitForWebFontOptions` | 下記のオプション                             |
+
+| オプション | 型                                                      | 説明                                                                                                                           |
+| ---------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `weight?`  | `number \| 'normal' \| 'bold'`                          | フォントの太さ（`font-weight`）。デフォルトは`'normal'`                                                                        |
+| `style?`   | `'normal' \| 'italic' \| 'oblique' \| 'oblique <n>deg'` | フォントのスタイル（`font-style`）。デフォルトは`'normal'`                                                                     |
+| `width?`   | `WebFontWidth`                                          | フォントの幅（`font-width`）。キーワードのみ指定可能。デフォルトは`'normal'`                                                   |
+| `text?`    | `string`                                                | 判定に使用する文字列。デフォルトは`' '`。[`unicode-range`で分割されたWebフォント](#unicode-rangeで分割されたwebフォント)を参照 |
+| `timeout?` | `number`                                                | 失敗とみなすまでの時間（ミリ秒）。デフォルトは`3000`。`Infinity`でタイムアウトなし。`NaN`の場合はデフォルト値を使用する        |
+| `signal?`  | `AbortSignal`                                           | 待機を中断するためのシグナル                                                                                                   |
+
+以下の場合はrejectします。
+
+| ケース                                      | エラー                                                        |
+| ------------------------------------------- | ------------------------------------------------------------- |
+| `timeout`までに利用可能にならなかった       | `TimeoutError`の`DOMException`                                |
+| `signal`で中断した                          | `signal.reason`（未設定の場合は`AbortError`の`DOMException`） |
+| フォントファイルの読み込みに失敗した        | `document.fonts.load()`のエラー                               |
+| `document.fonts`を利用できない（SSR時など） | `NotSupportedError`の`DOMException`                           |
+
+### `isWebFontLoaded`
+
+```ts
+isWebFontLoaded(family: string, options?: IsWebFontLoadedOptions): boolean
+```
+
+指定のWebフォントがロード済みで、すぐに利用できるかを同期的に判定します。\
+`document.fonts`に登録されていないフォントや、ロード済みのファイルが1つも無いフォント、SSR時など判定できない環境では`false`を返します。
+
+| 引数       | 型                       | 説明                                         |
+| ---------- | ------------------------ | -------------------------------------------- |
+| `family`   | `string`                 | フォントファミリー。クォートの有無は問わない |
+| `options?` | `IsWebFontLoadedOptions` | 下記のオプション                             |
+
+| オプション | 型                                                      | 説明                                                                                                                           |
+| ---------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `weight?`  | `number \| 'normal' \| 'bold'`                          | フォントの太さ（`font-weight`）。デフォルトは`'normal'`                                                                        |
+| `style?`   | `'normal' \| 'italic' \| 'oblique' \| 'oblique <n>deg'` | フォントのスタイル（`font-style`）。デフォルトは`'normal'`                                                                     |
+| `width?`   | `WebFontWidth`                                          | フォントの幅（`font-width`）。キーワードのみ指定可能。デフォルトは`'normal'`                                                   |
+| `text?`    | `string`                                                | 判定に使用する文字列。デフォルトは`' '`。[`unicode-range`で分割されたWebフォント](#unicode-rangeで分割されたwebフォント)を参照 |
+
+### 定数
+
+| 定数               | 説明                                                             |
+| ------------------ | ---------------------------------------------------------------- |
+| `DEFAULT_TIMEOUT`  | `waitForWebFont`の`timeout`のデフォルト値（`3000`ミリ秒）        |
+| `POLLING_INTERVAL` | `waitForWebFont`が`FontFace`の登録を再確認する間隔（`25`ミリ秒） |
+
+### 型
+
+| 型                       | 説明                                                                              |
+| ------------------------ | --------------------------------------------------------------------------------- |
+| `WebFontMatchOptions`    | 対象のWebフォントを特定するためのオプション（`weight`・`style`・`width`・`text`） |
+| `WebFontWidth`           | `width`に指定できるキーワード                                                     |
+| `WaitForWebFontOptions`  | `waitForWebFont`のオプション                                                      |
+| `IsWebFontLoadedOptions` | `isWebFontLoaded`のオプション                                                     |
 
 ## 注意事項
 
@@ -94,6 +147,8 @@ Google FontsのNoto Sans JPのように`unicode-range`で複数のファイル�
 ```ts
 await waitForWebFont('Noto Sans JP', { text: 'あいう' });
 ```
+
+`text`の文字を収録したファイルが無い場合（デフォルトの半角スペースを含まない和文専用のフォントなど）、`waitForWebFont`はタイムアウトします。`isWebFontLoaded`は、同じフォントファミリーのファイルが1つもロードされていなければ`false`を返しますが、他のファイルがロード済みであれば`true`を返します。ブラウザはこのような文字をロードを待たずに代替フォントで表示するためです。
 
 ### 対応ブラウザ
 

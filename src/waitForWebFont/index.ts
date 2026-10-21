@@ -1,2 +1,2 @@
 export type * from './types';
-export { default } from './waitForWebFont';
+export { default, default as waitForWebFont } from './waitForWebFont';

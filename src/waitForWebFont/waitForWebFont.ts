@@ -16,7 +16,9 @@ export default function waitForWebFont(
   family: string,
   options: WaitForWebFontOptions = {},
 ): Promise<FontFace[]> {
-  const { timeout = DEFAULT_TIMEOUT, signal, text } = options;
+  const { timeout: rawTimeout = DEFAULT_TIMEOUT, signal, text } = options;
+  // 計算の誤りなどでNaNが渡された場合は、タイムアウトしなくならないよう既定値で補う
+  const timeout = Number.isNaN(rawTimeout) ? DEFAULT_TIMEOUT : rawTimeout;
   const fontFaceSet = _getFontFaceSet();
   if (!fontFaceSet) {
     return Promise.reject(

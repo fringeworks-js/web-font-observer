@@ -1,10 +1,18 @@
 import isWebFontLoaded from './isWebFontLoaded';
 
-function createFontFaceSet(families: string[]) {
+type FontFaceStub = { family: string; status: FontFaceLoadStatus };
+
+function createFontFaceSet(fontFaces: (string | FontFaceStub)[]) {
   return {
     check: vi.fn(() => true),
-    forEach: (callback: (fontFace: { family: string }) => void) => {
-      families.forEach((family) => callback({ family }));
+    forEach: (callback: (fontFace: FontFaceStub) => void) => {
+      fontFaces.forEach((fontFace) =>
+        callback(
+          typeof fontFace === 'string'
+            ? { family: fontFace, status: 'loaded' }
+            : fontFace,
+        ),
+      );
     },
   };
 }
@@ -35,9 +43,48 @@ describe('isWebFontLoaded', () => {
     expect(fonts.check).not.toHaveBeenCalled();
   });
 
+  it('ロード済みのFontFaceが無い場合（textを収録したファイルが無い場合など）、check()を呼ばずにfalseを返す', () => {
+    // check()は該当するFontFaceが無いとtrueを返す
+    const fonts = createFontFaceSet([
+      { family: 'MyJP', status: 'unloaded' },
+      { family: 'MyJP', status: 'loading' },
+      { family: 'MyJP', status: 'error' },
+    ]);
+    vi.stubGlobal('document', { fonts });
+    expect(isWebFontLoaded('MyJP')).toBe(false);
+    expect(fonts.check).not.toHaveBeenCalled();
+  });
+
+  it('同じファミリーにロード済みのFontFaceがあれば、check()の結果を返す', () => {
+    const fonts = createFontFaceSet([
+      { family: 'MyJP', status: 'unloaded' },
+      { family: 'MyJP', status: 'loaded' },
+    ]);
+    vi.stubGlobal('document', { fonts });
+    expect(isWebFontLoaded('MyJP', { text: 'あ' })).toBe(true);
+    expect(fonts.check).toHaveBeenCalledWith('16px "MyJP"', 'あ');
+  });
+
+  it('別のファミリーのFontFaceがロード済みでも、対象のファミリーが未ロードならfalseを返す', () => {
+    const fonts = createFontFaceSet([
+      { family: 'Roboto', status: 'loaded' },
+      { family: 'MyJP', status: 'unloaded' },
+    ]);
+    vi.stubGlobal('document', { fonts });
+    expect(isWebFontLoaded('MyJP')).toBe(false);
+  });
+
   it('フォントファミリー名の大文字小文字を区別しない', () => {
     vi.stubGlobal('document', { fonts: createFontFaceSet(['Roboto']) });
     expect(isWebFontLoaded('roboto')).toBe(true);
+  });
+
+  it('クォート付きのフォントファミリー名を指定できる', () => {
+    const fonts = createFontFaceSet(['Noto Sans JP']);
+    vi.stubGlobal('document', { fonts });
+    expect(isWebFontLoaded('"Noto Sans JP"')).toBe(true);
+    expect(isWebFontLoaded("'Noto Sans JP'")).toBe(true);
+    expect(fonts.check).toHaveBeenCalledWith('16px "Noto Sans JP"', undefined);
   });
 
   it('オプションとtextをcheck()に渡す', () => {
