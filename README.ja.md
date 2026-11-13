@@ -1,7 +1,7 @@
 # @fringeworks/web-font-observer
 
 `@fringeworks/web-font-observer` は、Webフォントの利用可否を確認することに特化した、誰かにとっては便利なライブラリです。\
-標準の CSS Font Loading API をベースに、[fontfaceobserver](https://github.com/bramstein/fontfaceobserver) 相当の機能を2021年以降の主要ブラウザ向けに提供します。
+標準の CSS Font Loading API をベースに、[fontfaceobserver](https://github.com/bramstein/fontfaceobserver) 相当の機能を主要ブラウザ向けに提供します（[対応ブラウザ](#対応ブラウザ)を参照）。
 
 **[English README is available here](./README.md)**
 
@@ -16,8 +16,6 @@
 
 ```bash
 npm install @fringeworks/web-font-observer
-# または
-pnpm add @fringeworks/web-font-observer
 ```
 
 ## 使い方
@@ -120,10 +118,9 @@ isWebFontLoaded(family: string, options?: IsWebFontLoadedOptions): boolean
 
 ### 定数
 
-| 定数               | 説明                                                             |
-| ------------------ | ---------------------------------------------------------------- |
-| `DEFAULT_TIMEOUT`  | `waitForWebFont`の`timeout`のデフォルト値（`3000`ミリ秒）        |
-| `POLLING_INTERVAL` | `waitForWebFont`が`FontFace`の登録を再確認する間隔（`25`ミリ秒） |
+| 定数              | 説明                                                      |
+| ----------------- | --------------------------------------------------------- |
+| `DEFAULT_TIMEOUT` | `waitForWebFont`の`timeout`のデフォルト値（`3000`ミリ秒） |
 
 ### 型
 
@@ -152,7 +149,14 @@ await waitForWebFont('Noto Sans JP', { text: 'あいう' });
 
 ### 対応ブラウザ
 
-2021年以降にリリースされた主要ブラウザ（Chrome / Edge 88以降、Firefox 85以降、Safari 14以降）が対象です。
+下記のメジャーなブラウザのバージョンに対応しています。
+
+| ブラウザ        | 対応バージョン      |
+| --------------- | ------------------- |
+| Google Chrome   | 88 (2021年1月) 以降 |
+| Microsoft Edge  | 88 (2021年1月) 以降 |
+| Apple Safari    | 14 (2020年9月) 以降 |
+| Mozilla Firefox | 85 (2021年1月) 以降 |
 
 ## ライセンス
 

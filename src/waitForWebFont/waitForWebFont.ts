@@ -1,6 +1,7 @@
 import _getFontFaceSet from '../_internal/_getFontFaceSet';
 import _toFont from '../_internal/_toFont';
-import { DEFAULT_TIMEOUT, POLLING_INTERVAL } from '../constants';
+import { DEFAULT_TIMEOUT } from '../constants';
+import { POLLING_INTERVAL } from './_constants';
 import type { WaitForWebFontOptions } from './types';
 
 /**
@@ -89,6 +90,8 @@ export default function waitForWebFont(
  * @returns 中断の理由
  */
 function getAbortReason(signal: AbortSignal): unknown {
-  // reasonに対応していないブラウザ向けにAbortErrorを補う
+  // reasonに対応していないブラウザ向けにAbortErrorを補う。
+  // reasonはChrome / Edge 98・Firefox 97・Safari 15.4（2022年3月）から。
+  // これより前のブラウザが対応範囲から外れたら、signal.reasonだけを返してよい
   return signal.reason ?? new DOMException('Aborted.', 'AbortError');
 }

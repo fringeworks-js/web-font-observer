@@ -1,7 +1,7 @@
 # @fringeworks/web-font-observer
 
 `@fringeworks/web-font-observer` is a library some will find handy, for checking whether web fonts are available.\
-It is built on the standard CSS Font Loading API and provides functionality equivalent to [fontfaceobserver](https://github.com/bramstein/fontfaceobserver) for major browsers released in 2021 or later.
+It is built on the standard CSS Font Loading API and provides functionality equivalent to [fontfaceobserver](https://github.com/bramstein/fontfaceobserver) for major browsers (see [Supported browsers](#supported-browsers)).
 
 **[日本語のREADMEはこちら](./README.ja.md)**
 
@@ -16,8 +16,6 @@ It is built on the standard CSS Font Loading API and provides functionality equi
 
 ```bash
 npm install @fringeworks/web-font-observer
-# or
-pnpm add @fringeworks/web-font-observer
 ```
 
 ## Usage
@@ -120,10 +118,9 @@ It returns `false` when the font is not registered in `document.fonts`, when non
 
 ### Constants
 
-| Constant           | Description                                                                       |
-| ------------------ | --------------------------------------------------------------------------------- |
-| `DEFAULT_TIMEOUT`  | Default `timeout` of `waitForWebFont` (`3000` ms)                                 |
-| `POLLING_INTERVAL` | Interval at which `waitForWebFont` rechecks the `FontFace` registration (`25` ms) |
+| Constant          | Description                                       |
+| ----------------- | ------------------------------------------------- |
+| `DEFAULT_TIMEOUT` | Default `timeout` of `waitForWebFont` (`3000` ms) |
 
 ### Types
 
@@ -152,7 +149,14 @@ If no file covers the characters in `text` (e.g. a Japanese-only font that does 
 
 ### Supported browsers
 
-Major browsers released in 2021 or later (Chrome / Edge 88+, Firefox 85+, Safari 14+).
+The following versions of major browsers are supported.
+
+| Browser         | Supported versions    |
+| --------------- | --------------------- |
+| Google Chrome   | 88 (January 2021) +   |
+| Microsoft Edge  | 88 (January 2021) +   |
+| Apple Safari    | 14 (September 2020) + |
+| Mozilla Firefox | 85 (January 2021) +   |
 
 ## License
 

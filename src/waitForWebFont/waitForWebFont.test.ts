@@ -1,4 +1,5 @@
-import { DEFAULT_TIMEOUT, POLLING_INTERVAL } from '../constants';
+import { DEFAULT_TIMEOUT } from '../constants';
+import { POLLING_INTERVAL } from './_constants';
 import waitForWebFont from './waitForWebFont';
 
 const fontFace = { family: 'Roboto' } as FontFace;
